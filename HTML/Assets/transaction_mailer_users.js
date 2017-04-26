@@ -1,3 +1,5 @@
+
+//You do not need to put the detectors in the active array, the system does that
 TransactionMailerUsers =
 {
     process_transactions_url: "",
@@ -6,7 +8,7 @@ TransactionMailerUsers =
     mailerURL: "mail-worker.js",
     mailer: null,
     mailerPort: null,
-    scripts: ["currentAttemptCount.js", "help_model.js"],
+    scripts: ["currentAttemptCount.js", "help_model.js", "totalAttemptCountDyads.js"],
     active: []
 };
 
@@ -15,7 +17,7 @@ TransactionMailerUsers.create = function(path, txDestURL, scriptsDestURL, authTo
     console.log("TransactionMailerUsers.create(): at entry, scriptsInitzer ", scriptsInitzer );
 
     TransactionMailerUsers.mailer = new Worker(path+'/'+TransactionMailerUsers.mailerURL);
-    
+
     TransactionMailerUsers.mailer.postMessage({ command: "process_transactions_url", "process_transactions_url": txDestURL, "process_detectors_url": scriptsDestURL, "authenticity_token": authToken});
     TransactionMailerUsers.process_transactions_url = txDestURL;
     TransactionMailerUsers.authenticity_token = authToken;
@@ -58,4 +60,8 @@ TransactionMailerUsers.sendTransaction = function(tx)
     {
 	tmUsers[i].postMessage(tx);
     }
+};
+
+onmessage = function(event) {
+        console.log("From detector Count Attempts: ",event);
 };
